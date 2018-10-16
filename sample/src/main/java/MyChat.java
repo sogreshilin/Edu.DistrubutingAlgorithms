@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import org.jgroups.*;
@@ -16,7 +17,13 @@ public class MyChat extends ReceiverAdapter {
     private static final String DEFAULT_CONFIG_DIR = "src/resources/";
     private static final String DEFAULT_CONFIG_NAME = "chat-config.xml";
 
-    private static final Set<String> EXIT_KEY_WORDS = Set.of("/exit", "/quit", "/finish");
+    private static final Set<String> EXIT_KEY_WORDS = new HashSet<>();
+
+    static {
+        EXIT_KEY_WORDS.add("/exit");
+        EXIT_KEY_WORDS.add("/quit");
+        EXIT_KEY_WORDS.add("/finish");
+    }
 
     private JChannel channel;
 
