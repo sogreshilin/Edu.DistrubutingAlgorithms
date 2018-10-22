@@ -1,3 +1,5 @@
+package ru.nsu.fit.sogreshilin;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
@@ -22,7 +24,6 @@ public class MyChat extends ReceiverAdapter {
     static {
         EXIT_KEY_WORDS.add("/exit");
         EXIT_KEY_WORDS.add("/quit");
-        EXIT_KEY_WORDS.add("/finish");
     }
 
     private JChannel channel;
