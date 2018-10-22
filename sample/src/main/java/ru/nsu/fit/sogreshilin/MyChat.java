@@ -1,35 +1,38 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
+package ru.nsu.fit.sogreshilin;
+
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jgroups.*;
 import org.jgroups.jmx.JmxConfigurator;
 import org.jgroups.util.Util;
 
 
 public class MyChat extends ReceiverAdapter {
-    private static final String CLUSTER_NAME = "sogreshilin";
+    private static final Logger LOG = LogManager.getLogger(MyChat.class);
+
+    private static final String CLUSTER_NAME = "small-little-cluster";
     private static final String DOMAIN = "sogreshilin-channel";
     private static final String DEFAULT_CONFIG_DIR = "src/resources/";
     private static final String DEFAULT_CONFIG_NAME = "chat-config.xml";
 
     private static final Set<String> EXIT_KEY_WORDS = new HashSet<>();
+    private static final String UNKNOWN = "Unknown";
 
     static {
         EXIT_KEY_WORDS.add("/exit");
         EXIT_KEY_WORDS.add("/quit");
-        EXIT_KEY_WORDS.add("/finish");
     }
 
     private JChannel channel;
 
     @Override
     public void viewAccepted(View view) {
-        System.out.println("change in membership: " + view);
+        System.out.println("Change in membership: " + view.getMembers());
         super.viewAccepted(view);
     }
 
@@ -38,7 +41,7 @@ public class MyChat extends ReceiverAdapter {
         System.out.printf("[%s]: %s\n", message.getSrc(), message.getObject());
     }
 
-    public void start(String pathToXmlConfigFile, String name) throws Exception {
+    private void start(String pathToXmlConfigFile, String name) throws Exception {
         if (Paths.get(pathToXmlConfigFile).toFile().isFile()) {
             channel = new JChannel(pathToXmlConfigFile);
             channel.setName(name);
@@ -70,8 +73,19 @@ public class MyChat extends ReceiverAdapter {
         System.out.printf("To quit, please, use one of the following key words: %s.\n", EXIT_KEY_WORDS);
     }
 
+    private static String requestUserName() {
+        System.out.print("Enter your name, please: ");
+        Reader reader = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            return ((BufferedReader) reader).readLine();
+        } catch (IOException e) {
+            LOG.error("Error reading user name", e);
+        }
+        return UNKNOWN;
+    }
+
     public static void main(String[] args) throws Exception {
-        new MyChat().start(DEFAULT_CONFIG_DIR + DEFAULT_CONFIG_NAME,
-                UUID.randomUUID().toString().substring(0, 7));
+        String name = requestUserName();
+        new MyChat().start(DEFAULT_CONFIG_DIR + DEFAULT_CONFIG_NAME, name);
     }
 }
