@@ -44,5 +44,5 @@
     <FRAG2 frag_size="60K"/>
     <pbcast.STATE/>
     <COUNTER num_backups="1"/>
-    <CENTRAL_LOCK2/>
+    <CENTRAL_LOCK/>
 </config>
