@@ -86,10 +86,10 @@ public class ReplicatedMap extends ReceiverAdapter {
      * @param value значение
      */
     public boolean _setStock(String key, double value) {
-//        synchronized (stocks) {
+        synchronized (stocks) {
             stocks.put(key, value);
             LOG.info("map: set key={} to value={}", key, value);
-//        }
+        }
         return true;
     }
 
